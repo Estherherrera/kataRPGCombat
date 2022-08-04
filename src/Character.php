@@ -8,12 +8,14 @@ class Character
     private int $health;
     private int $level;
     private bool $alive;
+    public int $distance;
 
     public function __construct()
     {
         $this->health = 1000;
         $this->level = 1;
         $this->alive = true;
+        $this->distance = 2;
     }
     public function getHealth()
     {
@@ -44,6 +46,26 @@ class Character
             if ($enemy->alive && $enemy->health  < 1000) {
                 $enemy->health = $enemy->health + 100;
             }
+        }
+    }
+
+    public function setLevel($level)
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
+    public function damage_based_on_level_difference($enemy)
+    {
+        if($enemy->level - $this->level >= 5)
+        {
+            $enemy->health = $enemy->health -50;
+        }
+
+        if($this->level - $enemy->level >= 5)
+        {
+            $enemy->health = $enemy->health - 150;
         }
     }
 }

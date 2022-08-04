@@ -5,6 +5,7 @@ namespace Tests;
 use PHPUnit\Framework\TestCase;
 use App\Character;
 use App\Faction;
+use LDAP\Result;
 
 use function PHPUnit\Framework\assertEquals;
 
@@ -87,9 +88,74 @@ class CharacterTest extends TestCase {
 		$goku->heal($vegeta);
 		$healVegeta = $vegeta->getHealth();
 
-		//
+		//Then
 		$this->assertEquals(1000, $healVegeta);
 	}
+
+	public function test_target_is_5_or_more_Levels_above_the_attacker()
+	{
+		//Given
+		$freezer = new Character;
+		$vegeta = new Character;
+
+		//When
+		$getLevel = $freezer->getLevel();
+		$freezer->setLevel($getLevel - 5);
+		$freezer->damage_based_on_level_difference($vegeta);
+		$result = $vegeta->getHealth();
+
+		//Then
+		$this->assertEquals(950, $result);
+	}
+
+	public function test_target_is_5_or_more_Levels_below_the_attacker()
+	{
+		//Given
+		$freezer = new Character;
+		$vegeta = new Character;
+
+		//When
+		$getLevel = $freezer->getLevel();
+		$freezer->setLevel($getLevel + 5);
+		$freezer->damage_based_on_level_difference($vegeta);
+		$result = $vegeta->getHealth();
+
+		//Then
+		$this->assertEquals(850, $result);
+	}
+
+	public function test_range_of_2_meters()
+	{
+		//given
+		$freezer = new Character;
+		$vegeta = new Character;
+
+		//When
+		if($freezer->distance == 2)
+		{
+			$freezer->attack($vegeta);
+		}
+		$result = $vegeta->getHealth();
+
+		//Then
+		$this->assertEquals(900, $result);
+	}
+	 public function test_range_of_20_meters()
+	 {
+		//Given
+		$freezer = new Character;
+		$vegeta = new Character;
+
+		//When
+		$freezer->distance = 20;
+		$freezer->attack($vegeta);
+		$result = $vegeta->getHealth();
+
+		//Then
+		$this->assertEquals(900, $result);
+
+
+	 }
 	
 
 }
